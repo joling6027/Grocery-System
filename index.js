@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
-
+//something new
 
 const conn = mongoose.createConnection("mongodb://localhost:27017/categoryDB", {
   useNewUrlParser: true,
