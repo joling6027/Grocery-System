@@ -11,7 +11,8 @@ const empSchema = mongoose.Schema({
   DOB: { type: Date, required: true },
   // address: { type: String, required: true },
   position: {type: String, required: true},
-  SSN: { type: Number, required: false, null: true}
+  SSN: { type: Number, required: false, null: true},
+  password: {type: String, required: true}
 });
 
 const empItem = mongoose.model("empItem", empSchema);
@@ -23,6 +24,7 @@ const admin = new empItem({
     DOB: 01/01/1999,
     position: "Manager",
     SSN: 900000001,
+    password: "1111"
   });
 const employee1 = new empItem({
     empID: "300335548",
@@ -31,6 +33,7 @@ const employee1 = new empItem({
     DOB: 01/01/1999,
     position: "Cashier",
     SSN: 900000002,
+    password: "2222"
   });
 const employee2 = new empItem({
     empID: "300323120",
@@ -39,6 +42,7 @@ const employee2 = new empItem({
     DOB: 01/01/1999,
     position: "Cashier",
     SSN: 900000003,
+    password:"3333"
   });
 const employee3 = new empItem({
     empID: "300342244",
@@ -47,6 +51,7 @@ const employee3 = new empItem({
     DOB: 01/01/1999,
     position: "Cashier",
     SSN: 900000004,
+    password: "4444"
   });
 const employee4 = new empItem({
     empID: "300329987",
@@ -55,6 +60,7 @@ const employee4 = new empItem({
     DOB: 01/01/1999,
     position: "Cashier",
     SSN: 900000005,
+    password:"5555"
   });
 
   empItem.deleteMany({})

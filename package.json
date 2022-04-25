@@ -23,6 +23,7 @@
     "express": "^4.17.3",
     "moment": "^2.29.2",
     "mongoose": "^6.2.10",
+    "mongoose-encryption": "^2.1.2",
     "nodemon": "^2.0.15"
   },
   "description": ""
