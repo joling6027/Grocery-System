@@ -1,8 +1,10 @@
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
-const port = process.env.port || 3000;
+const port = process.env.port || 5000;
 const mongoose = require("mongoose");
+const encrypt = require("mongoose-encryption");
 const moment = require('moment'); //for date formatting
 // const { name } = require("ejs");
 
@@ -11,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
-
+//something new
 
 const conn = mongoose.createConnection("mongodb://localhost:27017/categoryDB", {
   useNewUrlParser: true,
@@ -23,7 +25,7 @@ const conn2 = mongoose.createConnection("mongodb://localhost:27017/empDB", {
 });
 
 
-const itemSchema = mongoose.Schema({
+const itemSchema = new mongoose.Schema({
   itemcategory: { type: String, required: true },
   itemId: { type: Number, required: true, unique: true },
   itemname: { type: String, required: true, unique: true },
@@ -40,80 +42,64 @@ const empSchema = mongoose.Schema({
   DOB: { type: Date, required: true },
   position: {type: String, required: true},
   SSN: { type: Number, required: false, null: true},
+  password: {type:String, required: true}
 });
+
+
+itemSchema.plugin(encrypt, { secret: process.env.SECRET, encryptFields: ["password", "SSN"] });
 
 
 const inventoryModel = conn.model("Item",itemSchema);
 const employeeModel = conn2.model("empItem",empSchema);
 
-// drop the database if it already exists
-// const connection = mongoose.connection;
-// connection.once("open", function(){
-//   console.log("MongoDB connected successfully.");
-//   connection.db.listCollections().toArray(function(err, names){
-//     if(err) console.log(err);
-//     else{
-//       // for(i = 0; i < names.length; i++){
-//         console.log("Line 28 index.js: " + names[0].name);
-//         if((names[0].name = "items")){
-//           console.log("items collection Exists in DB");
-//           connection.db.dropCollection("items",function(err,res){
-//             console.log("collection dropped");
-//           });
-//           // console.log("items collection no longer available.");
-//         }else{
-//           console.log("collection doesn't exist.")
-//         }
-//       // }
-//     }
-//   })
-// });
-
-// const inventoryDB = require("./inventoryDB");
-// const inventoryModel = require("./inventoryModel");
-// const employeeModel = require('./employeeModel');
-
-
 app.get("/", (req,res)=> {
-  res.redirect("/Login");
+  res.redirect("/login");
 })
 
-app.get("/Login", (req, res) => {
-  console.log(`I am in login page`);
+app.get("/login", (req, res) => {
+  console.log(`I am in login get`);
   // res.sendFile(__dirname + "/Login.html");
   res.render("login", {errorMsg: ""});
 });
 
 
-app.post("/Login", (req, res) => {
-  console.log("We are in Login page");
-  let myid = req.body.myId;
-  console.log(myid);
-  console.log(employeeModel.find({'empID': myid}));
-  return employeeModel.find({'empID': myid},(err, doc)=> {
+app.post("/login", (req, res) => {
+  console.log("We are in login post");
+  const id = req.body.myId;
+  const password = req.body.myPassword;
+
+  // console.log(employeeModel.findOne({'empID': id}));
+  employeeModel.findOne({'empID': id},(err, doc)=> {
     if(doc.length === 0 || err){
-      console.log(doc);
+      console.log(err);
+      console.log("I'm in login error")
       res.render("login", {errorMsg: "Please enter vaild id or password."});
       // res.status(403).send("Access denied.");
       // res.send(403, "No rights to access");
     }else{
-      console.log(doc);
-      res.redirect("/MainMenu");
+      console.log(doc.password);
+      if(doc){
+        if (doc.password === password){
+          res.redirect("/mainMenu");
+        }else{
+          res.render("login", { errorMsg: "Please enter vaild id or password." });
+        }
+      }
     }
   })
 });
 
-app.get("/MainMenu", (req, res) => {
+app.get("/mainMenu", (req, res) => {
   console.log("I am in main page");
   res.sendFile(__dirname + "/MainMenu.html");
 });
 
-app.get("/Charts", (req, res) => {
+app.get("/charts", (req, res) => {
   console.log("View Charts.");
-  res.sendFile(__dirname + "/Charts.html");
+  res.sendFile(__dirname + "/charts.html");
 });
 
-app.get("/Inventory", (req, res) => {
+app.get("/inventory", (req, res) => {
   //res.sendFile(__dirname + "/Inventory.html");
 
   return inventoryModel.find(function(err, items) {
@@ -136,7 +122,7 @@ app.get("/Inventory", (req, res) => {
   }).sort({'itemId': 1});
 });
 
-app.get("/Staffs", (req, res, next) => {
+app.get("/staffs", (req, res, next) => {
 
   return employeeModel.find(function(err, staffs) {
     if(err) {
@@ -217,7 +203,7 @@ app.post("/delete-product", (req, res, next) => {
       return res.send(500, {error: err});
     } else {
       console.log("Successfully Deleted");
-      let redir = { redirect: "/Inventory"}
+      let redir = { redirect: "/inventory"}
       return res.json(redir);
       }
   })
@@ -267,7 +253,7 @@ app.post("/delete-staff", (req, res, next) => {
       return res.send(500, {error: err});
     } else {
       console.log("Successfully Deleted");
-      let redir = { redirect: "/Staffs"}
+      let redir = { redirect: "/staffs"}
       return res.json(redir);
       }
   }).srot;
@@ -296,7 +282,7 @@ app.post("/category", async (req, res) => {
     // console.log(response);
   }
 
-  let redir = { redirect: "/MainMenu"}
+  let redir = { redirect: "/mainMenu"}
   return res.json(redir);
   
   // res.sendFile(__dirname + '/MainMenu.html');
