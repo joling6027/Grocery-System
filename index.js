@@ -51,34 +51,6 @@ itemSchema.plugin(encrypt, { secret: secret, encryptFields: ["password", "SSN"] 
 const inventoryModel = conn.model("Item",itemSchema);
 const employeeModel = conn2.model("empItem",empSchema);
 
-// drop the database if it already exists
-// const connection = mongoose.connection;
-// connection.once("open", function(){
-//   console.log("MongoDB connected successfully.");
-//   connection.db.listCollections().toArray(function(err, names){
-//     if(err) console.log(err);
-//     else{
-//       // for(i = 0; i < names.length; i++){
-//         console.log("Line 28 index.js: " + names[0].name);
-//         if((names[0].name = "items")){
-//           console.log("items collection Exists in DB");
-//           connection.db.dropCollection("items",function(err,res){
-//             console.log("collection dropped");
-//           });
-//           // console.log("items collection no longer available.");
-//         }else{
-//           console.log("collection doesn't exist.")
-//         }
-//       // }
-//     }
-//   })
-// });
-
-// const inventoryDB = require("./inventoryDB");
-// const inventoryModel = require("./inventoryModel");
-// const employeeModel = require('./employeeModel');
-
-
 app.get("/", (req,res)=> {
   res.redirect("/login");
 })
