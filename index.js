@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
@@ -44,8 +45,8 @@ const empSchema = mongoose.Schema({
   password: {type:String, required: true}
 });
 
-const secret = "Thisisourlittlesecret.";
-itemSchema.plugin(encrypt, { secret: secret, encryptFields: ["password", "SSN"] });
+
+itemSchema.plugin(encrypt, { secret: process.env.SECRET, encryptFields: ["password", "SSN"] });
 
 
 const inventoryModel = conn.model("Item",itemSchema);
