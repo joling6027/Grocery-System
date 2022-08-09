@@ -106,6 +106,13 @@ input#search,
     visibility: visible;
 } */
 
+h2.order-title{
+  background: linear-gradient(90deg,
+        rgba(2, 0, 36, 1) 0%,
+        rgba(105, 255, 102, 1) 35%,
+        rgba(0, 212, 255, 1) 100%);
+}
+
 #order-part {
   flex: 4;
   border-left: 2px solid black;

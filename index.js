@@ -1,5 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
+const saltRounds = 12;
 const path = require("path");
 const port = process.env.port || 3000;
 const mongoose = require("mongoose");
@@ -39,39 +41,13 @@ const empSchema = mongoose.Schema({
   lastName: { type: String, required: true },
   DOB: { type: Date, required: true },
   position: {type: String, required: true},
+  password: {type: String, required:true},
   SSN: { type: Number, required: false, null: true},
 });
 
 
 const inventoryModel = conn.model("Item",itemSchema);
 const employeeModel = conn2.model("empItem",empSchema);
-
-// drop the database if it already exists
-// const connection = mongoose.connection;
-// connection.once("open", function(){
-//   console.log("MongoDB connected successfully.");
-//   connection.db.listCollections().toArray(function(err, names){
-//     if(err) console.log(err);
-//     else{
-//       // for(i = 0; i < names.length; i++){
-//         console.log("Line 28 index.js: " + names[0].name);
-//         if((names[0].name = "items")){
-//           console.log("items collection Exists in DB");
-//           connection.db.dropCollection("items",function(err,res){
-//             console.log("collection dropped");
-//           });
-//           // console.log("items collection no longer available.");
-//         }else{
-//           console.log("collection doesn't exist.")
-//         }
-//       // }
-//     }
-//   })
-// });
-
-// const inventoryDB = require("./inventoryDB");
-// const inventoryModel = require("./inventoryModel");
-// const employeeModel = require('./employeeModel');
 
 
 app.get("/", (req,res)=> {
@@ -88,8 +64,11 @@ app.get("/Login", (req, res) => {
 app.post("/Login", (req, res) => {
   console.log("We are in Login page");
   let myid = req.body.myId;
-  console.log(myid);
-  console.log(employeeModel.find({'empID': myid}));
+  let myPassword = req.body.myPassword;
+  // console.log(myid);
+  // console.log(employeeModel.find({'empID': myid}));
+
+
   return employeeModel.find({'empID': myid},(err, doc)=> {
     if(doc.length === 0 || err){
       console.log(doc);
@@ -97,8 +76,19 @@ app.post("/Login", (req, res) => {
       // res.status(403).send("Access denied.");
       // res.send(403, "No rights to access");
     }else{
-      console.log(doc);
-      res.redirect("/MainMenu");
+      // console.log(doc);
+      // console.log(doc[0].password);
+      let hash = doc[0].password;
+      bcrypt.compare(myPassword,hash,function(err,result){
+        if(result){
+          console.log("I got the correct password.");
+          res.redirect("/MainMenu");
+        }else{
+          console.log("No, the password is not correct.");
+          res.render("login", { errorMsg: "Please enter vaild id or password." });
+        }
+      })
+      
     }
   })
 });

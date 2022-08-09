@@ -11,10 +11,13 @@ const empSchema = mongoose.Schema({
   DOB: { type: Date, required: true },
   // address: { type: String, required: true },
   position: {type: String, required: true},
+  password: {type:String, required:true},
   SSN: { type: Number, required: false, null: true}
 });
 
 const empItem = mongoose.model("empItem", empSchema);
+
+//password: abc123
 
 const admin = new empItem({
     empID: "300330001",
@@ -22,6 +25,7 @@ const admin = new empItem({
     lastName: "Eng",
     DOB: 01/01/1999,
     position: "Manager",
+    password:"$2a$12$YdVe78UvOwJ37fAfpWEanuRQQVAd6uOW8hO8oa0YcCStrJKDnF3Bi",
     SSN: 900000001,
   });
 const employee1 = new empItem({
@@ -30,6 +34,7 @@ const employee1 = new empItem({
     lastName: "Weng",
     DOB: 01/01/1999,
     position: "Cashier",
+    password:"$2a$12$2PQ.kG2lfPHsPLBkkDcMeuhVhz9Ji1NvrrmPkn6wkcM7G8xMf8slO",
     SSN: 900000002,
   });
 const employee2 = new empItem({
@@ -38,6 +43,7 @@ const employee2 = new empItem({
     lastName: "Kim",
     DOB: 01/01/1999,
     position: "Cashier",
+    password: "$2a$12$FUIDQsgtjt0Ile.Z0WrpEeZsqizAa9ZZvMLE4W7fMLptogNmnbFf.",
     SSN: 900000003,
   });
 const employee3 = new empItem({
@@ -46,6 +52,7 @@ const employee3 = new empItem({
     lastName: "Singh",
     DOB: 01/01/1999,
     position: "Cashier",
+    password: "$2a$12$5DbmzWj2f.wFGEwa8z2EtObXw/cyTak6vQuUPKedsDOIVUjzVyQ3G",
     SSN: 900000004,
   });
 const employee4 = new empItem({
@@ -54,6 +61,7 @@ const employee4 = new empItem({
     lastName: "Singh",
     DOB: 01/01/1999,
     position: "Cashier",
+    password:"$2a$12$z06jknbqhNO81AG076oXLuhdRKLdmQtHGR6cb5hx/SCTe7UUsLcZ2",
     SSN: 900000005,
   });
 
